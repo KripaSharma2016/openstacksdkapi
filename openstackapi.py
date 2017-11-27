@@ -1,10 +1,20 @@
 # Licensed under the Sanctum Networks, Version 1.0 (the "License"); you may
 # not use this file except in compliance with the License
-'''
-Created on Oct 12, 2017
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# Find User Guide
+#
+#   https://developer.openstack.org/sdks/python/openstacksdk/users/index.html#user-guides
+#
+# Installation Guide
+#
+#  https://developer.openstack.org/sdks/python/openstacksdk/users/index.html#api-documentation
 
-@author: kripa
-'''
 
 """
 :class: ~OpenstackSdkWrapper class is a wrapper used to bridge the openstacksdk functionality and jupitor.
@@ -413,6 +423,23 @@ class OpenstackSdkWrapper():
         except Exception as ex:
             log.error("Error in finding port. Reason is {}".format(ex))
             return 400, ex  
+        
+    def findPortBySubnetId(self, conn, networkId,subnetId):
+        """
+            :param: object conn: Connection type.
+            :param: str networkId: Desired network id.
+            :param: str subnetId: Desired network id of same network
+        """
+        self.conn = conn
+        
+        data_dict ={'network_id': networkId,
+                    'subnet_id':subnetId}
+        try:
+            data = self.conn.network.ports(**data_dict)  
+            return 201,data 
+        except Exception as ex:
+            log.error("Error in finding port by subnet id. Reason is {}".format(ex))
+            return 400, ex 
                           
     def openPort(self,conn,secName):
         """
@@ -750,55 +777,3 @@ class OpenstackSdkWrapper():
         except Exception as ex:
             log.error("Error in listing images. Reason is {}".format(ex))
             return 400, ex    
-if __name__=="__main__":
-    configData = {'auth_url' : 'http://10.10.1.16:35357/v3',
-        'project_name': 'demo',
-        'user_domain_name': 'default',
-        'project_domain_name': 'default',
-        'username': 'admin',
-        'password': 'stack',
-        }
-    obj=OpenstackSdkWrapper('RegionOne',**configData)
-    data, conn = obj.makeConnection()
-    print(">>>>>>>>>>>>>.")
-    print(obj.createUser(conn, "john", "123456"))
-    '''status, data = obj.findNetwork(conn, "private")
-    print(data['id'])
-    status, var = obj.createPort(conn, "2ed8504d-6dd5-4b62-9364-2084a6d6d4ad", "test12")
-    print(var)
-    print(type(var))
-    print(var.id)
-    print(var.mac_address)'''
-    """print(obj.createFixedIpPort(
-                    conn,
-                    '77ac6056-cbfd-482e-8406-50b46370cec4',
-                    'afcca3b8-48ee-499a-ac13-a3c0fa4732a3', 
-                    "myfixedport12455",
-                    '5a:fe:62:d8:f4:8b',
-                    '192.168.0.250'))"""
-    
-    #print(obj.addRouterInterface(conn,'vrfc7f0408826714d55a3892c20297f37b3', 'afcca3b8-48ee-499a-ac13-a3c0fa4732a3'))
-    #print(obj.createRouter(conn, "vrf98", "016e9b36-f69b-41fe-8b61-b495627c3e34"))
-    #obj.createPort(conn)
-    #print(obj.createNetwork(conn, "kripaaaa", "hjjhhd", "192.168.10.0/24", "192.168.10.1"))
-    #print(obj.listServer(conn))
-    #a,b = obj.listNetworks(conn)
-    #print(a)
-    #print(b)
-    
-    #print(type(conn))
-    '''for network in obj.listNetworks(conn):
-        print(network['name'])
-    for i in obj.listNetworks(conn):
-        print i
-    obj.createRouter('myrouter','016e9b36-f69b-41fe-8b61-b495627c3e34') '''   
-    '''print(obj.findNetwork(conn, 'net5'))
-    for vm in obj.listServer(conn):
-        print(vm)'''
-    #for user in obj.listRegions(conn):
-    #    print(user)
-    '''obj.createKey(conn, 'key123')
-    var = obj.createServer(conn, 'f5ed87f3-f1c5-4b27-87dd-0c43e5e62ce0', '914cab88-1256-40b0-8b54-bb79dd7a9db6', 'df7bb819-619d-49a3-92a4-13f6ad8469d9', 'testingsdkone', 'key123')
-    '''
-    #print(obj.createNetwork(conn, "privatesdk", "sbprivatesdk", "192.168.5.0/24", "192.168.5.1"))
-    #print(obj.addRouterInterface('myrouter', 'c0d5f0cd-f8fd-4588-bcc6-074014f34372'))
